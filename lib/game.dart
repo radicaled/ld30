@@ -3,6 +3,7 @@ import 'dart:html';
 import 'package:stagexl/stagexl.dart';
 import 'input_manager.dart';
 import 'worlds/generator.dart';
+import 'worlds/starfield.dart';
 
 class Game {
   Stage stage;
@@ -17,13 +18,11 @@ class Game {
 
     renderLoop.addStage(stage);
 
-//    var shape = new Shape();
-//    shape.graphics.circle(100, 100, 60);
-//    shape.graphics.fillColor(Color.Red);
-//    stage.addChild(shape);
 
-//    inputManager.on('A').listen((ke) => shape.x += 1);
-    var worlds = [];
+    var starfield = new Starfield(800, 600);
+    stage.addChild(starfield);
+
+
     int areaX = 0; int areaY = 0;
     var width = 60; var height = 60;
     var rand = new Random();
