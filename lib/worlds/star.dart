@@ -8,6 +8,7 @@ class Star extends Sprite implements Animatable {
   double brightest;
   double darkest;
   bool twinkles = false;
+  bool isDistantSun = false;
 
   Tween _tween;
   var _rand = new Random();
@@ -15,7 +16,9 @@ class Star extends Sprite implements Animatable {
   Star(int x, int y) {
     this.x = x;
     this.y = y;
-    this.twinkles = _rand.nextInt(100) > 60;
+    this.isDistantSun = _rand.nextInt(100) > 90;
+    this.twinkles = _rand.nextInt(100) > 60 || isDistantSun;
+
 
     generate();
 
@@ -28,6 +31,11 @@ class Star extends Sprite implements Animatable {
     darkest   = min(a, b);
     alpha = brightest;
     var color = Color.White;
+    if (isDistantSun) {
+      brightest = 1.0;
+      darkest   = 0.8;
+      color = Color.Yellow;
+    }
 //    if (twinkles == true) {
 //      color = Color.HotPink;
 //    }
