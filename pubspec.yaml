@@ -1,0 +1,7 @@
+name: ld30
+description: A sample web application
+dependencies:
+  browser: any
+  noise_algorithms: any
+  stagexl: any
+  tmx: any
