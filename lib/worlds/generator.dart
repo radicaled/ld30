@@ -24,11 +24,19 @@ class World {
     var perlin = new Perlin2(rand.nextInt(100));
     var circle = new Circle(width / 2, height / 2, width / 2);
 
+    var matrix = bd.renderTextureQuad.drawMatrix;
+    var context = bd.renderTexture.canvas.context2D;
+    context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+
     for(int x = 0; x < width; x++) {
       for(int y = 0; y < height; y++) {
         // Planets are circular.
         if (!circle.contains(x, y)) {
-          bd.setPixel32(x, y, Color.Transparent);
+          context.fillStyle = "rgba(0,0,0,0)";
+          context.clearRect(x, y, 1, 1);
+          context.fillRect(x, y, 1, 1);
+
+          //bd.setPixel32(x, y, Color.Transparent);
           continue;
         }
 
@@ -109,9 +117,14 @@ class World {
         // pixel += (val << 24) + (val << 16);
         // pixel += (max(0, (25 - val) * 8) << 8) + 0;
 
-        bd.setPixel(x, y, pixel);
+        context.fillStyle = "rgba($red,$green,$blue,1.0)";
+        context.clearRect(x, y, 1, 1);
+        context.fillRect(x, y, 1, 1);
+
+        //bd.setPixel(x, y, pixel);
       }
     }
+    bd.renderTexture.update();
     bitmap = new Bitmap(bd);
   }
 }
