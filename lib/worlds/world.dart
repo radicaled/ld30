@@ -1,5 +1,3 @@
-library generator;
-
 import 'dart:math';
 import 'package:stagexl/stagexl.dart';
 import 'package:noise_algorithms/noise_algorithms.dart';

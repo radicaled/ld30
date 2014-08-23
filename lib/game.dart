@@ -2,7 +2,7 @@ import 'dart:math';
 import 'dart:html';
 import 'package:stagexl/stagexl.dart';
 import 'input_manager.dart';
-import 'worlds/generator.dart';
+import 'worlds/world.dart';
 import 'worlds/starfield.dart';
 
 class Game {
