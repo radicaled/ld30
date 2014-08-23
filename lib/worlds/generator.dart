@@ -28,6 +28,7 @@ class World {
       for(int y = 0; y < height; y++) {
         // Planets are circular.
         if (!circle.contains(x, y)) {
+          bd.setPixel32(x, y, Color.Transparent);
           continue;
         }
 
