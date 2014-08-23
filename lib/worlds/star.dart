@@ -7,6 +7,7 @@ import 'package:stagexl/stagexl.dart';
 class Star extends Sprite implements Animatable {
   double brightest;
   double darkest;
+  bool twinkles = false;
 
   Tween _tween;
   var _rand = new Random();
@@ -14,15 +15,11 @@ class Star extends Sprite implements Animatable {
   Star(int x, int y) {
     this.x = x;
     this.y = y;
+    this.twinkles = _rand.nextInt(100) > 60;
+
     generate();
 
-    targetValue = [brightest, darkest][_rand.nextInt(1)];
-    twinkleStep = _rand.nextInt(555) * 0.001;
-
     _tween = new Tween(this, 2.0, TransitionFunction.easeOutBounce);
-    _tween.animate.alpha.by(1.0);
-    _tween.delay = 10.0;
-    _tween.onComplete = () => _tween.animate.alpha.by(0.0);
   }
 
   void generate() {
@@ -31,24 +28,31 @@ class Star extends Sprite implements Animatable {
     darkest   = min(a, b);
     alpha = brightest;
     var color = Color.White;
+//    if (twinkles == true) {
+//      color = Color.HotPink;
+//    }
 
     this.graphics
       ..rect(x, y, 1, 1)
       ..fillColor(color);
   }
-  double targetValue = 1.0;
-  double twinkleStep = 5.0; // 0.1
+
+  num lastTwinkle = 0.0;
+  num lastTwinkleReset = 8.0;
 
   bool advanceTime(num time) {
-    var inc = (twinkleStep * time);
-    if (alpha >= targetValue) {
-      if (alpha >= brightest) { targetValue = darkest; } else { targetValue = brightest; }
-    }
-
-    if (alpha >= targetValue) {
-      alpha = alpha - inc;
-    } else {
-      alpha = alpha + inc;
+    _tween.advanceTime(time);
+    // Legit worst way to handle this scenario.
+    // But I'm lazy and this is Ludum Dare.
+    if (twinkles && _tween.isComplete) {
+      _tween = new Tween(this, 2.0, TransitionFunction.linear);
+      _tween.animate.alpha.to(brightest);
+      _tween.delay = _rand.nextInt(5);
+      _tween.onComplete = () {
+        _tween = new Tween(this, 2.0, TransitionFunction.linear);
+        _tween.animate.alpha.to(darkest);
+        _tween.delay = 0.5;
+      };
     }
     return true;
   }
