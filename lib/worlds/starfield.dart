@@ -19,6 +19,7 @@ class Starfield extends Sprite {
     for (int i = 0; i < 400; i++) {
       var star = new Star(rand.nextInt(w), rand.nextInt(h));
       addChild(star);
+      stars.add(star);
     }
   }
 }

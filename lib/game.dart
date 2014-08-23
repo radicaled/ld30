@@ -14,14 +14,14 @@ class Game {
     stage = new Stage(canvas);
     inputManager = new InputManager(stage);
 
-    var renderLoop = new RenderLoop();
+    RenderLoop renderLoop = new RenderLoop();
 
     renderLoop.addStage(stage);
 
 
     var starfield = new Starfield(800, 600);
     stage.addChild(starfield);
-
+    renderLoop.juggler.addGroup(starfield.stars);
 
     int areaX = 0; int areaY = 0;
     var width = 60; var height = 60;
