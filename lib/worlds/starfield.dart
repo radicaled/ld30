@@ -18,7 +18,6 @@ class Starfield extends Sprite {
     int h = height.toInt();
     for (int i = 0; i < 400; i++) {
       var star = new Star(rand.nextInt(w), rand.nextInt(h));
-      print('Drawing star at ${star.x} / ${star.y}: ${w} x ${h} (real: $width x $height)');
       addChild(star);
     }
   }

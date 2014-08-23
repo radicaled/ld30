@@ -14,9 +14,12 @@ class Star extends Sprite {
   }
 
   void generate() {
-    brightness = new Random().nextInt(100) / 100;
+    brightness = new Random().nextInt(255) / 255;
+    alpha = brightness;
+    var color = Color.White;
+
     this.graphics
       ..rect(x, y, 1, 1)
-      ..fillColor(Color.White);
+      ..fillColor(color);
   }
 }
