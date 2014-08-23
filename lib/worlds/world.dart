@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:stagexl/stagexl.dart';
 import 'package:noise_algorithms/noise_algorithms.dart';
+import '../color_utils.dart';
 
 class World {
   int width;
@@ -18,13 +19,27 @@ class World {
   }
 
   void generateTerrain() {
-    Random rand = new Random();
-    var perlin = new Perlin2(rand.nextInt(100));
+    Random _rand = new Random();
+    var perlin = new Perlin2(_rand.nextInt(100));
     var circle = new Circle(width / 2, height / 2, width / 2);
 
     var matrix = bd.renderTextureQuad.drawMatrix;
     var context = bd.renderTexture.canvas.context2D;
     context.setTransform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.tx, matrix.ty);
+
+    var generator;
+
+    var worldSeed = _rand.nextInt(100);
+
+    if (worldSeed >= 90) {
+      generator = WorldTypes.verdantWorld;
+    } else if (worldSeed >= 70 && worldSeed < 90) {
+      generator = WorldTypes.waterWorld;
+    } else if (worldSeed >= 10 && worldSeed < 70) {
+      generator = WorldTypes.desertWorld;
+    } else if (worldSeed < 10) {
+      generator = WorldTypes.volcanoWorld;
+    }
 
     for(int x = 0; x < width; x++) {
       for(int y = 0; y < height; y++) {
@@ -46,76 +61,9 @@ class World {
         value *= 256;
         int val = value.toInt();
 
-        var hills = Color.White;
-        var oceans = Color.Gray;
+        var cs = generator(val);
 
-        int pixel = 0;
-
-        var toRgb = (color) {
-          var r = color >> 16 & 0xFF;
-          var g = color >> 8 & 0xFF;
-          var b = color & 0xFF;
-          return [r, g, b];
-        };
-
-        var fromRgb = (r, g, b) {
-          var rgb = (r << 16) + (g << 8) + (b);
-          return rgb;
-        };
-
-        var red;
-        var green;
-        var blue;
-
-        // if (val <= 128) {
-        //   green = 128 - val;
-        //   red = 255 - green;
-        //   blue = 0;
-        // } else {
-        //   red = 0;
-        //   blue = 255 - val;
-        //   green = 255 - blue;
-        // }
-
-        if (val >= 20) {
-          // RGB(81, 177, 81)
-          // RGB(39, 87, 39)
-          red = max(39, 81 - val);
-          green = max(32, 177 - val);
-          blue = max(39, 81 - val);
-        } else { // River
-          // RGB(78, 82, 255) -- max
-          // RGB(32, 34, 87) -- min
-          red = max(32, 78 - val);
-          green = max(34, 82 - val);
-          blue = max(87, 255 - val);
-        }
-
-        // if (val <= 128) {
-        //   green = 128 - val;
-        //   blue = 255 - green;
-        //   red = 0;
-        // } else {
-        //   blue = 0;
-        //   red = 128 - val;
-        //   green = 128 - blue;
-        // }
-
-        pixel = val;
-
-        pixel = fromRgb(red, green, blue);
-
-        // if (value > 0.5) {
-        //   pixel = colorize(hills, hills);
-        // } else {
-        //   pixel = colorize(oceans, oceans);
-        // }
-        // int val = value.toInt();
-        // int pixel = val;
-        // pixel += (val << 24) + (val << 16);
-        // pixel += (max(0, (25 - val) * 8) << 8) + 0;
-
-        context.fillStyle = "rgba($red,$green,$blue,1.0)";
+        context.fillStyle = cs.rgbaString;
         context.clearRect(x, y, 1, 1);
         context.fillRect(x, y, 1, 1);
 
@@ -124,5 +72,76 @@ class World {
     }
     bd.renderTexture.update();
     bitmap = new Bitmap(bd);
+  }
+}
+
+class WorldColors {
+  static ColorStruct greenHills = new ColorStruct(81, 177, 81);
+  static ColorStruct greenValleys = new ColorStruct(39, 87, 39);
+
+  static ColorStruct shallowWater = new ColorStruct(78, 82, 255);
+  static ColorStruct deepWater    = new ColorStruct(32, 34, 87);
+
+  static ColorStruct deserts = new ColorStruct(135, 108, 60);
+  static ColorStruct desertGulley = new ColorStruct(92, 62, 9);
+
+  static ColorStruct shallowLava = new ColorStruct(177, 42, 6);
+  static ColorStruct deepLava = new ColorStruct(88, 22, 4);
+
+  static ColorStruct mountainBase = new ColorStruct(150, 75, 0);
+  static ColorStruct mountainPeak = new ColorStruct(0, 0, 0);
+}
+
+
+class WorldColorPair {
+  ColorStruct start;
+  ColorStruct finish;
+  WorldColorPair(this.start, this.finish);
+}
+
+class WorldColorPairs {
+  static WorldColorPair hills   = new WorldColorPair(WorldColors.greenHills, WorldColors.greenValleys);
+  static WorldColorPair rivers  = new WorldColorPair(WorldColors.shallowWater, WorldColors.deepWater);
+
+  static WorldColorPair deserts = new WorldColorPair(WorldColors.desertGulley, WorldColors.deserts);
+  static WorldColorPair mountains = new WorldColorPair(WorldColors.mountainBase, WorldColors.mountainPeak);
+
+  static WorldColorPair lava = new WorldColorPair(WorldColors.shallowLava, WorldColors.deepLava);
+}
+
+
+class WorldTypes {
+  static ColorStruct _calc(height, WorldColorPair belowSeaLevel, WorldColorPair aboveSeaLevel) {
+    var r, g, b;
+    var start;
+    var finish;
+
+    if (height >= 20) {
+      start = aboveSeaLevel.start;
+      finish = aboveSeaLevel.finish;
+    } else { // River
+      start = belowSeaLevel.start;
+      finish = belowSeaLevel.finish;
+    }
+    r = max(finish.red, start.red - height);
+    g = max(finish.green, start.green - height);
+    b = max(finish.blue, start.blue - height);
+    return new ColorStruct(r, g, b);
+  }
+
+  static ColorStruct verdantWorld(num height) {
+    return _calc(height, WorldColorPairs.rivers, WorldColorPairs.hills);
+  }
+
+  static ColorStruct desertWorld(num height) {
+    return _calc(height, WorldColorPairs.deserts, WorldColorPairs.mountains);
+  }
+
+  static ColorStruct waterWorld(num height) {
+    return _calc(height, WorldColorPairs.rivers, WorldColorPairs.rivers);
+  }
+
+  static ColorStruct volcanoWorld(num height) {
+    return _calc(height, WorldColorPairs.lava, WorldColorPairs.deserts);
   }
 }
