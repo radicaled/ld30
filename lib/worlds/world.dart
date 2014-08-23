@@ -103,7 +103,7 @@ class WorldColorPairs {
   static WorldColorPair hills   = new WorldColorPair(WorldColors.greenHills, WorldColors.greenValleys);
   static WorldColorPair rivers  = new WorldColorPair(WorldColors.shallowWater, WorldColors.deepWater);
 
-  static WorldColorPair deserts = new WorldColorPair(WorldColors.desertGulley, WorldColors.deserts);
+  static WorldColorPair deserts = new WorldColorPair(WorldColors.deserts, WorldColors.desertGulley);
   static WorldColorPair mountains = new WorldColorPair(WorldColors.mountainBase, WorldColors.mountainPeak);
 
   static WorldColorPair lava = new WorldColorPair(WorldColors.shallowLava, WorldColors.deepLava);
@@ -130,15 +130,15 @@ class WorldTypes {
   }
 
   static ColorStruct verdantWorld(num height) {
-    return _calc(height, WorldColorPairs.rivers, WorldColorPairs.hills);
+    return _calc(height ~/ 2, WorldColorPairs.rivers, WorldColorPairs.hills);
   }
 
   static ColorStruct desertWorld(num height) {
-    return _calc(height, WorldColorPairs.deserts, WorldColorPairs.mountains);
+    return _calc(height ~/ 3, WorldColorPairs.deserts, WorldColorPairs.mountains);
   }
 
   static ColorStruct waterWorld(num height) {
-    return _calc(height, WorldColorPairs.rivers, WorldColorPairs.rivers);
+    return _calc(height ~/ 3, WorldColorPairs.rivers, WorldColorPairs.rivers);
   }
 
   static ColorStruct volcanoWorld(num height) {
