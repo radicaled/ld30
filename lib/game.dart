@@ -13,7 +13,12 @@ class Game {
   ResourceManager rm;
   GameState gs;
 
+  Sprite worldLayer = new Sprite();
+
+  static Game current;
+
   Game(this.canvas) {
+    current = this;
     stage = new Stage(canvas);
     inputManager = new InputManager(stage);
     gs = new GameState(stage);
@@ -33,6 +38,15 @@ class Game {
     var starfield = new Starfield(800, 600);
     stage.addChild(starfield);
     renderLoop.juggler.addGroup(starfield.stars);
+
+    generateWorlds();
+
+    gs.start();
+  }
+
+  void generateWorlds() {
+    worldLayer.removeFromParent();
+    worldLayer.removeChildren();
 
     var rand = new Random();
     num width = 60;
@@ -71,10 +85,10 @@ class Game {
         ..y = point.x
         ..width = width
         ..height = height;
-      stage.addChild(world);
+      worldLayer.addChild(world);
       i++;
     });
 
-    gs.start();
+    stage.addChild(worldLayer);
   }
 }

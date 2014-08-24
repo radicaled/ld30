@@ -1,6 +1,7 @@
 import 'dart:math';
 import 'package:stagexl/stagexl.dart';
 import 'ai.dart';
+import 'game.dart';
 
 class GameState {
   int maxAttempts = 3;
@@ -97,6 +98,7 @@ class GameState {
   }
 
   void reset() {
+    Game.current.generateWorlds();
     currentAttempts = 0;
     winSprite.removeFromParent();
     lossSprite.removeFromParent();
