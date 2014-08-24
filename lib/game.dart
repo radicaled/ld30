@@ -9,10 +9,17 @@ class Game {
   Stage stage;
   CanvasElement canvas;
   InputManager inputManager;
+  ResourceManager rm;
 
   Game(this.canvas) {
     stage = new Stage(canvas);
     inputManager = new InputManager(stage);
+    rm = new ResourceManager();
+    rm.addSound('game', 'packages/ld30/music/game_music.wave');
+
+    rm.load().then((rm) {
+      rm.getSound('game').play(true);
+    });
 
     RenderLoop renderLoop = new RenderLoop();
 
