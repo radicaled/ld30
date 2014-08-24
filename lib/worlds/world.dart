@@ -2,6 +2,7 @@ import 'dart:math';
 import 'package:stagexl/stagexl.dart';
 import 'package:noise_algorithms/noise_algorithms.dart';
 import '../color_utils.dart';
+import '../ai.dart';
 
 class World extends Sprite {
   int radius;
@@ -11,29 +12,32 @@ class World extends Sprite {
   bool talkingTrash = false;
   World(width, height) {
     bd = new BitmapData(width, height);
+  }
 
-    this.onMouseClick.listen((MouseEvent me) {
-      if (talkingTrash) { return; }
+  void say(String message) {
+    if (talkingTrash) { return; }
+    talkingTrash = true;
 
-      var tf = new TextField('Hello!')
-        ..x = this.x
-        ..y = max(0, this.y - 20)
-        ..textColor = Color.Red
-        ..width = 60
-        ..height = 12;
-      var t = new Tween(tf, 2.0, TransitionFunction.linear)
-        ..animate.alpha.to(0.0)
-        ..delay = 1.0
-        ..onComplete = () {
-          tf.removeFromParent();
-      };
-      this.stage.juggler.add(t);
-      this.parent.addChild(tf);
-    });
+    var tf = new TextField(message)
+      ..x = this.x
+      ..y = max(0, this.y - 20)
+      ..textColor = Color.Yellow
+      //..width = 60
+      ..height = 12;
+    var t = new Tween(tf, 2.0, TransitionFunction.linear)
+      ..animate.alpha.to(0.0)
+      ..delay = 1.0
+      ..onComplete = () {
+        talkingTrash = false;
+        tf.removeFromParent();
+    };
+    this.stage.juggler.add(t);
+    this.parent.addChild(tf);
   }
 
   void generate() {
     generateTerrain();
+    angryAI(this);
     this.addChild(bitmap);
   }
 
