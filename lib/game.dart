@@ -30,31 +30,41 @@ class Game {
     stage.addChild(starfield);
     renderLoop.juggler.addGroup(starfield.stars);
 
-    int areaX = 0; int areaY = 0;
-    var width = 60; var height = 60;
     var rand = new Random();
-    var areaInc = 200;
-    for(int i = 0; i < 10; i++) {
+    num width = 60;
+    num height = 60;
+
+    // Seed a bunch of possible locations for planets.
+    var points = new Set();
+    for(int i = 0; i < 10000; i++) {
+      points.add(new Point(rand.nextInt(700), rand.nextInt(500)));
+    }
+
+    // Remove any locations that intersect.
+    var acceptablePoints = [];
+    while(true) {
+      if (points.length == 0) { break; }
+      var point = points.first;
+      var radius = width * 2;
+      var circle = new Circle(point.x, point.y, radius);
+      acceptablePoints.add(point);
+
+      // Will always remove itself.
+      points.removeWhere((p) => circle.containsPoint(p));
+    }
+
+
+
+    acceptablePoints.take(10).forEach((point) {
       var world = new World(400, 400);
       world.generate();
 
-      // World has an area of 100 x 100
-      // World cannot be within 20 of area border
-      var x = rand.nextInt(80) + 20;
-      var y = rand.nextInt(80) + 20;
-
       world.bitmap
-        ..x = areaX + x
-        ..y = areaY + y
+        ..x = point.y
+        ..y = point.x
         ..width = width
         ..height = height;
       stage.addChild(world.bitmap);
-
-      areaX += areaInc;
-      if (areaX > areaInc * 6) {
-        areaX = 0;
-        areaY = areaInc;
-      }
-    }
+    });
   }
 }
