@@ -64,7 +64,7 @@ class Game {
         ..y = point.x
         ..width = width
         ..height = height;
-      stage.addChild(world.bitmap);
+      stage.addChild(world);
     });
   }
 }

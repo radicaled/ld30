@@ -3,25 +3,28 @@ import 'package:stagexl/stagexl.dart';
 import 'package:noise_algorithms/noise_algorithms.dart';
 import '../color_utils.dart';
 
-class World {
-  int width;
-  int height;
-
+class World extends Sprite {
+  int radius;
   Bitmap bitmap;
   BitmapData bd;
 
-  World(this.width, this.height) {
+  World(width, height) {
     bd = new BitmapData(width, height);
+
+    this.onMouseClick.listen((MouseEvent me) {
+
+    });
   }
 
   void generate() {
     generateTerrain();
+    this.addChild(bitmap);
   }
 
   void generateTerrain() {
     Random _rand = new Random();
     var perlin = new Perlin2(_rand.nextInt(100));
-    var circle = new Circle(width / 2, height / 2, width / 2);
+    var circle = new Circle(bd.width / 2, bd.height / 2, bd.width / 2);
 
     var matrix = bd.renderTextureQuad.drawMatrix;
     var context = bd.renderTexture.canvas.context2D;
@@ -41,8 +44,8 @@ class World {
       generator = WorldTypes.volcanoWorld;
     }
 
-    for(int x = 0; x < width; x++) {
-      for(int y = 0; y < height; y++) {
+    for(int x = 0; x < bd.width; x++) {
+      for(int y = 0; y < bd.height; y++) {
         // Planets are circular.
         if (!circle.contains(x, y)) {
           context.fillStyle = "rgba(0,0,0,0)";
