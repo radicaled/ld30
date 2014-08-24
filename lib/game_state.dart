@@ -10,6 +10,7 @@ class GameState {
   TextField attemptText;
   Sprite winSprite = new Sprite();
   Sprite lossSprite = new Sprite();
+  Sprite resetButton = new Sprite();
 
   GameState(this.stage) {
     attemptText = new TextField('')
@@ -19,13 +20,20 @@ class GameState {
       ..height = 16
       ..textColor = Color.White;
 
-    lossSprite.graphics
-      ..rect(0, 0, 800, 600)
-      ..fillColor(Color.Black);
+    var resetText = new TextField('Reset?');
+    resetButton
+            ..x = 800 ~/ 2
+            ..y = 600 ~/ 2;
+    resetButton.graphics
+            ..rect(0, 0, 60, 60)
+            ..fillColor(Color.Yellow);
 
-    winSprite.graphics
-      ..rect(0, 0, 800, 600)
-      ..fillColor(Color.Black);
+    resetButton.onMouseClick.listen((me) {
+      reset();
+    });
+
+    resetButton.addChild(resetText);
+
 
 
     updateStatus();
@@ -57,8 +65,13 @@ class GameState {
         ..width = 600
         ..height = 300;
 
+    winSprite.graphics
+      ..clear()
+      ..rect(0, 0, 800, 600)
+      ..fillColor(Color.Black);
 
     winSprite.addChild(tf);
+    winSprite.addChild(resetButton);
     stage.addChild(winSprite);
   }
 
@@ -69,8 +82,13 @@ class GameState {
           ..width = 600
           ..height = 300;
 
+    lossSprite.graphics
+          ..clear()
+          ..rect(0, 0, 800, 600)
+          ..fillColor(Color.Black);
 
     lossSprite.addChild(tf);
+    lossSprite.addChild(resetButton);
     stage.addChild(lossSprite);
   }
 
@@ -80,5 +98,8 @@ class GameState {
 
   void reset() {
     currentAttempts = 0;
+    winSprite.removeFromParent();
+    lossSprite.removeFromParent();
+    updateStatus();
   }
 }

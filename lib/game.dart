@@ -2,6 +2,7 @@ import 'dart:math';
 import 'dart:html';
 import 'package:stagexl/stagexl.dart';
 import 'input_manager.dart';
+import 'game_state.dart';
 import 'worlds/world.dart';
 import 'worlds/starfield.dart';
 
@@ -10,11 +11,14 @@ class Game {
   CanvasElement canvas;
   InputManager inputManager;
   ResourceManager rm;
+  GameState gs;
 
   Game(this.canvas) {
     stage = new Stage(canvas);
     inputManager = new InputManager(stage);
+    gs = new GameState(stage);
     rm = new ResourceManager();
+
     rm.addSound('game', 'packages/ld30/music/game_music.wave');
 
     rm.load().then((rm) {
@@ -54,9 +58,12 @@ class Game {
     }
 
 
-
-    acceptablePoints.take(10).forEach((point) {
+    var worldCount = 10;
+    var friendlyWorld = rand.nextInt(worldCount + 1);
+    var i = 0;
+    acceptablePoints.take(worldCount).forEach((point) {
       var world = new World(400, 400);
+      if (i == friendlyWorld) { world.isFriendly = true; }
       world.generate();
 
       world
@@ -65,6 +72,9 @@ class Game {
         ..width = width
         ..height = height;
       stage.addChild(world);
+      i++;
     });
+
+    gs.start();
   }
 }
