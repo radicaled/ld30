@@ -22,7 +22,7 @@ class World extends Sprite {
       ..x = this.x
       ..y = max(0, this.y - 20)
       ..textColor = Color.Yellow
-      //..width = 60
+      ..width = 12 * message.length
       ..height = 12;
     var t = new Tween(tf, 2.0, TransitionFunction.linear)
       ..animate.alpha.to(0.0)
