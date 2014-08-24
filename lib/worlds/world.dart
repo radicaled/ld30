@@ -8,11 +8,27 @@ class World extends Sprite {
   Bitmap bitmap;
   BitmapData bd;
 
+  bool talkingTrash = false;
   World(width, height) {
     bd = new BitmapData(width, height);
 
     this.onMouseClick.listen((MouseEvent me) {
+      if (talkingTrash) { return; }
 
+      var tf = new TextField('Hello!')
+        ..x = this.x
+        ..y = max(0, this.y - 20)
+        ..textColor = Color.Red
+        ..width = 60
+        ..height = 12;
+      var t = new Tween(tf, 2.0, TransitionFunction.linear)
+        ..animate.alpha.to(0.0)
+        ..delay = 1.0
+        ..onComplete = () {
+          tf.removeFromParent();
+      };
+      this.stage.juggler.add(t);
+      this.parent.addChild(tf);
     });
   }
 

@@ -59,7 +59,7 @@ class Game {
       var world = new World(400, 400);
       world.generate();
 
-      world.bitmap
+      world
         ..x = point.y
         ..y = point.x
         ..width = width
