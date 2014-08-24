@@ -12,3 +12,11 @@ a whim to participate. No warm-up, no real experience game developing since
 ... ... ... since I can't even remember how long ago.
 
 I had no plan, no code, and no idea what any of the themes were going to be.
+
+Too much time spent on technical matters
+----------------------------------------
+
+I spent several hours on Friday trying to get semi-decent terrain
+generation based on perlin noise going. Then, on Saturday I spent even more
+time trying to vary the kinds of worlds that were generated. I only started
+working on actual gameplay mechanics during the Sunday, last day.
