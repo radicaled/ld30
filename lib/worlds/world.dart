@@ -9,6 +9,8 @@ class World extends Sprite {
   Bitmap bitmap;
   BitmapData bd;
 
+  bool isFriendly = false;
+
   bool talkingTrash = false;
   World(width, height) {
     bd = new BitmapData(width, height);
@@ -37,7 +39,9 @@ class World extends Sprite {
 
   void generate() {
     generateTerrain();
-    angryAI(this);
+    if (isFriendly) {
+      friendlyAI(this);
+    } else { angryAI(this); }
     this.addChild(bitmap);
   }
 

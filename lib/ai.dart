@@ -28,10 +28,15 @@ class WorldAIBuilder {
 }
 
 var angryAI = (world) {
-  var builder = new WorldAIBuilder(world)
+  return new WorldAIBuilder(world)
     ..message('You looking for a fight, mate?!')
     ..message('Enjoying yourself, yeah?')
     ..message('You bloody chav! Keep clicking!');
+};
 
-  return builder;
+var friendlyAI = (world) {
+  return new WorldAIBuilder(world)
+    ..message('You found me, champ!')
+    ..message('Good job, guy!')
+    ..message('Alright, fellah! I knew you could do it!');
 };
